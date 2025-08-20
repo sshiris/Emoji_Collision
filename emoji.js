@@ -13,39 +13,52 @@ function createEmojiA() {
     x: (Math.random() * canvas.width) / 4,
     y: Math.random() * (canvas.height / 2) + canvas.height / 4,
     emoji: emojiA,
-    dx: (Math.random() - 0.5) * 4,
-    dy: (Math.random() - 0.5) * 4,
+    dx: Math.random() - 1,
+    dy: Math.random() - 1,
   };
   return emojisA;
 }
 
 function createEmojiB() {
   const emojisB = {
-    x: (Math.random() * canvas.width) / 4 + (3 * canvas.width) / 4,
+    x: (Math.random() * canvas.width) / 4 + (3 * canvas.width) / 4 - size,
     y: Math.random() * (canvas.height / 2) + canvas.height / 4,
     emoji: emojiB,
-    dx: (Math.random() - 0.5) * 4,
-    dy: (Math.random() - 0.5) * 4,
+    dx: Math.random() - 1,
+    dy: Math.random() - 1,
   };
   return emojisB;
 }
 
 function startGame() {
-  //emojiA
-  emojis.push(createEmojiA());
-
-  //emojiB
-  emojis.push(createEmojiB());
-
-  drawEmojis();
+  for (let i = 0; i < 20; i++) {
+    emojis.push(createEmojiA());
+    emojis.push(createEmojiB());
+  }
+  requestAnimationFrame(updateEmojis);
 }
 
 function drawEmojis() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   emojis.forEach((emoji) => {
     ctx.font = `${size}px Arial`;
     ctx.fillText(emoji.emoji, emoji.x, emoji.y);
   });
 }
 
+function updateEmojis() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  emojis.forEach((emoji) => {
+    emoji.x += emoji.dx;
+    emoji.y += emoji.dy;
+    if (emoji.x < 0 || emoji.x > canvas.width - size) {
+      emoji.dx *= -1;
+    }
+    if (emoji.y < size || emoji.y > canvas.height) {
+      emoji.dy *= -1;
+    }
+  });
+  drawEmojis();
+  requestAnimationFrame(updateEmojis);
+}
 btnStart.addEventListener("click", startGame);
